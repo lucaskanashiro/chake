@@ -31,7 +31,8 @@ module Chake
       if $?
         status = $?.exitstatus
         if status != 0
-          raise CommandFailed.new([node.hostname, 'FAILED with exit status %d' % status].join(': '))
+          message = [node.hostname, 'FAILED with exit status %d' % status].join(': ')
+          raise CommandFailed.new(message.red_message)
         end
       end
     end
@@ -63,7 +64,7 @@ module Chake
 
     def self.get(name)
       backend = @backends.find { |b| b.backend_name == name }
-      backend || raise(ArgumentError.new("Invalid backend name: #{name}"))
+      backend || raise(ArgumentError.new("Invalid backend name: #{name}".red_message))
     end
 
   end
@@ -72,3 +73,4 @@ end
 
 require 'chake/backend/ssh'
 require 'chake/backend/local'
+require 'chake/utils/string'
